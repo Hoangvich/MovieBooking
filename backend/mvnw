@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+MAVEN_VER="3.9.6"
+MAVEN_HOME="${HOME}/.m2/wrapper/dists/apache-maven-${MAVEN_VER}"
+MVN_CMD="${MAVEN_HOME}/bin/mvn"
+if [ ! -f "${MVN_CMD}" ]; then
+  echo "Downloading Maven ${MAVEN_VER}..."
+  mkdir -p "${HOME}/.m2/wrapper/dists"
+  curl -fsSL "https://archive.apache.org/dist/maven/maven-3/${MAVEN_VER}/binaries/apache-maven-${MAVEN_VER}-bin.tar.gz" | tar xz -C "${HOME}/.m2/wrapper/dists/"
+fi
+exec "${MVN_CMD}" "$@"
