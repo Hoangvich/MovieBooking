@@ -58,7 +58,15 @@
       "Bash(python add_movies.py)",
       "Bash(rm add_movies.py)",
       "WebFetch(domain:movie-booking-kohl-pi.vercel.app)",
-      "WebFetch(domain:hvich-api.onrender.com)"
+      "WebFetch(domain:hvich-api.onrender.com)",
+      "Bash(xargs grep:*)",
+      "Bash(python3:*)",
+      "Bash(taskkill:*)",
+      "Bash(docker-compose ps:*)",
+      "Bash(node -e \"const d=[];process.stdin.on\\('data',c=>d.push\\(c\\)\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(Buffer.concat\\(d\\)\\);console.log\\('id:',j.data.id\\);console.log\\('title:',j.data.title\\);console.log\\('posterUrl:',j.data.posterUrl\\);console.log\\('trailerUrl:',j.data.trailerUrl\\);}\\)\")",
+      "Bash(node -e \"const d=[];process.stdin.on\\('data',c=>d.push\\(c\\)\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(Buffer.concat\\(d\\)\\);j.data.forEach\\(m=>console.log\\(m.id+': poster='+m.posterUrl+' | trailer='+m.trailerUrl\\)\\);}\\)\")",
+      "Bash(node -e \"const d=[];process.stdin.on\\('data',c=>d.push\\(c\\)\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(Buffer.concat\\(d\\)\\);console.log\\('Total showtimes:',j.data?.length\\);if\\(j.data?.length>0\\) j.data.slice\\(0,3\\).forEach\\(s=>console.log\\(s.id,s.movieTitle,s.startTime\\)\\);else console.log\\('Response:',JSON.stringify\\(j\\).slice\\(0,200\\)\\);}\\);\")",
+      "Bash(node -e \"const d=[];process.stdin.on\\('data',c=>d.push\\(c\\)\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(Buffer.concat\\(d\\)\\);j.data?.forEach\\(c=>console.log\\('id='+c.id+' name='+c.name\\)\\);}\\);\")"
     ]
   }
 }

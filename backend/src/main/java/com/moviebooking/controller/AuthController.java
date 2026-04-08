@@ -1,8 +1,10 @@
 package com.moviebooking.controller;
 
+import com.moviebooking.dto.request.ForgotPasswordRequest;
 import com.moviebooking.dto.request.LoginRequest;
 import com.moviebooking.dto.request.RefreshTokenRequest;
 import com.moviebooking.dto.request.RegisterRequest;
+import com.moviebooking.dto.request.ResetPasswordRequest;
 import com.moviebooking.dto.response.ApiResponse;
 import com.moviebooking.dto.response.AuthResponse;
 import com.moviebooking.service.AuthService;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Tag(name = "Authentication", description = "API đăng ký, đăng nhập, refresh token, logout")
+@Tag(name = "Authentication", description = "API đăng ký, đăng nhập, quên mật khẩu")
 public class AuthController {
 
     private final AuthService authService;
@@ -33,6 +35,20 @@ public class AuthController {
     @Operation(summary = "Đăng nhập")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(ApiResponse.success("Đăng nhập thành công", authService.login(request)));
+    }
+
+    @PostMapping("/forgot-password")
+    @Operation(summary = "Gửi email đặt lại mật khẩu")
+    public ResponseEntity<ApiResponse<Void>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.forgotPassword(request.getEmail());
+        return ResponseEntity.ok(ApiResponse.success("Đã gửi mã xác nhận đến email của bạn", null));
+    }
+
+    @PostMapping("/reset-password")
+    @Operation(summary = "Đặt lại mật khẩu bằng mã xác nhận")
+    public ResponseEntity<ApiResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request.getToken(), request.getNewPassword());
+        return ResponseEntity.ok(ApiResponse.success("Đặt lại mật khẩu thành công", null));
     }
 
     @PostMapping("/refresh-token")

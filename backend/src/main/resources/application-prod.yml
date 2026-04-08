@@ -27,6 +27,16 @@ spring:
         enabled: true
       timeout: 60000
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:nguyenhuyhoanghloc@gmail.com}
+    password: ${MAIL_PASSWORD:kbzh bybt ipul cmgc}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+
   jackson:
     serialization:
       write-dates-as-timestamps: false

@@ -11,6 +11,7 @@ import MovieDetailPage from '../pages/movie/MovieDetailPage';
 import CinemaListPage from '../pages/CinemaListPage';
 import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
+import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
 
 import SeatSelectionPage from '../pages/booking/SeatSelectionPage';
 import CheckoutPage from '../pages/booking/CheckoutPage';
@@ -38,6 +39,7 @@ export default function AppRoutes() {
         <Route path="/cinemas" element={<CinemaListPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
         <Route path="/booking/seats/:showtimeId" element={<ProtectedRoute><SeatSelectionPage /></ProtectedRoute>} />
         <Route path="/booking/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />

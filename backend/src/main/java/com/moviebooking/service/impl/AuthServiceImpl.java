@@ -13,12 +13,15 @@ import com.moviebooking.security.JwtTokenProvider;
 import com.moviebooking.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -30,6 +33,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
     private final RedisTemplate<String, String> redisTemplate;
+    private final JavaMailSender mailSender;
 
     @Override
     public AuthResponse register(RegisterRequest request) {
@@ -115,5 +119,43 @@ public class AuthServiceImpl implements AuthService {
         }
         // Blacklist the token in Redis
         redisTemplate.opsForValue().set("blacklist:" + token, "true", 24, TimeUnit.HOURS);
+    }
+
+    @Override
+    public void forgotPassword(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("Email không tồn tại trong hệ thống"));
+
+        String token = UUID.randomUUID().toString();
+        // Lưu token vào Redis, hết hạn sau 15 phút
+        redisTemplate.opsForValue().set("reset:" + token, user.getUsername(), 15, TimeUnit.MINUTES);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("MovieBooking - Đặt lại mật khẩu");
+        message.setText("Xin chào " + user.getFullName() + ",\n\n"
+                + "Bạn đã yêu cầu đặt lại mật khẩu.\n"
+                + "Mã xác nhận của bạn: " + token + "\n\n"
+                + "Mã này có hiệu lực trong 15 phút.\n\n"
+                + "Nếu bạn không yêu cầu, vui lòng bỏ qua email này.\n\n"
+                + "Trân trọng,\nMovieBooking Team");
+        mailSender.send(message);
+    }
+
+    @Override
+    public void resetPassword(String token, String newPassword) {
+        String username = redisTemplate.opsForValue().get("reset:" + token);
+        if (username == null) {
+            throw new BadRequestException("Mã xác nhận không hợp lệ hoặc đã hết hạn");
+        }
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new BadRequestException("User không tồn tại"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        // Xóa token sau khi dùng
+        redisTemplate.delete("reset:" + token);
     }
 }
