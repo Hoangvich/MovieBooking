@@ -19,6 +19,11 @@ public class ShowtimeResponse {
     private Double basePrice;
     private Long movieId;
     private String movieTitle;
+    private String posterUrl;
+    private String trailerUrl;
+    private String genre;
+    private Integer durationMinutes;
+    private String rated;
     private Long roomId;
     private String roomName;
     private Long cinemaId;

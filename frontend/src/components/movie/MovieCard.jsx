@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HiPlay, HiXMark } from 'react-icons/hi2';
+import { getPosterUrl } from '../../utils/imageUtils';
 
 function getYouTubeId(url) {
   if (!url) return null;
@@ -10,7 +11,7 @@ function getYouTubeId(url) {
 
 export default function MovieCard({ movie }) {
   const [showTrailer, setShowTrailer] = useState(false);
-  const poster = movie.posterUrl || `https://placehold.co/300x450/1e293b/64748b?text=${encodeURIComponent(movie.title)}`;
+  const poster = getPosterUrl(movie.id, movie.title);
   const videoId = getYouTubeId(movie.trailerUrl);
 
   return (
@@ -25,16 +26,13 @@ export default function MovieCard({ movie }) {
             />
           </Link>
 
-          {/* Rated badge */}
           {movie.rated && (
             <span className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded">
               {movie.rated}
             </span>
           )}
 
-          {/* Hover overlay */}
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-end pointer-events-none">
-            {/* Play trailer button */}
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-end">
             {videoId && (
               <button
                 onClick={(e) => {
@@ -42,14 +40,13 @@ export default function MovieCard({ movie }) {
                   e.stopPropagation();
                   setShowTrailer(true);
                 }}
-                className="pointer-events-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/40 transition-all border-2 border-white/60"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/40 transition-all border-2 border-white/60 z-10"
               >
                 <HiPlay className="w-6 h-6 sm:w-7 sm:h-7 text-white ml-0.5" />
               </button>
             )}
 
-            {/* Mua vé button */}
-            <div className="w-full p-3 pointer-events-auto">
+            <div className="w-full p-3">
               <Link
                 to={`/movies/${movie.id}`}
                 className="block bg-red-600 hover:bg-red-700 text-white text-center text-sm font-semibold py-2 rounded-md transition-colors"
@@ -67,15 +64,11 @@ export default function MovieCard({ movie }) {
           {movie.releaseDate && (
             <p className="text-xs text-gray-400 mt-0.5">
               {new Date(movie.releaseDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}
-              {movie.votePercent && (
-                <span className="ml-2 text-green-600">👍 {movie.votePercent}%</span>
-              )}
             </p>
           )}
         </Link>
       </div>
 
-      {/* Trailer Modal */}
       {showTrailer && videoId && (
         <div
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-2 sm:p-4"
@@ -87,10 +80,7 @@ export default function MovieCard({ movie }) {
           >
             <HiXMark className="w-7 h-7 sm:w-8 sm:h-8" />
           </button>
-          <div
-            className="w-full max-w-4xl aspect-video"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="w-full max-w-4xl aspect-video" onClick={(e) => e.stopPropagation()}>
             <iframe
               className="w-full h-full rounded-lg sm:rounded-xl"
               src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}

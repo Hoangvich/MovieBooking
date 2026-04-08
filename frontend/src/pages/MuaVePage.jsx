@@ -28,20 +28,21 @@ const REGIONS = [
 const CINEMA_BRANDS = {
   'Hà Nội': [
     { brand: 'CGV', brandLabel: 'cgv', cinemas: [
-      'CGV Vincom Royal City', 'CGV Vincom Bà Triệu', 'CGV Aeon Mall Long Biên',
-      'CGV Aeon Mall Hà Đông', 'CGV Ocean Park', 'CGV Tràng Tiền Plaza',
-      'CGV Times City', 'CGV Hồ Gươm Plaza', 'CGV Vincom Metropolis'
+      'CGV Royal City', 'CGV Tràng Tiền Plaza', 'CGV Times City',
+      'CGV Hồ Gươm Plaza', 'CGV Vincom Metropolis', 'CGV Vincom Center',
+      'CGV Aeon Mall Tân Phú'
     ]},
     { brand: 'Lotte Cinema', brandLabel: 'lotte', cinemas: [
       'Lotte Cinema Landmark 72', 'Lotte Cinema Thăng Long', 'Lotte Cinema Long Biên',
-      'Lotte Cinema Ba Đình', 'Lotte Cinema Đống Đa'
+      'Lotte Cinema Ba Đình', 'Lotte Cinema Đống Đa', 'Lotte Cinema Landmark 81'
     ]},
     { brand: 'Beta Cineplex', brandLabel: 'beta', cinemas: [
       'Beta Cineplex Thanh Xuân', 'Beta Cineplex Giải Phóng', 'Beta Cineplex Mỹ Đình',
       'Beta Cineplex Đan Phượng', 'Beta Cineplex Xuân Thủy', 'Beta Cineplex Tây Sơn'
     ]},
     { brand: 'BHD Star', brandLabel: 'bhd', cinemas: [
-      'BHD Star Vincom Phạm Ngọc Thạch', 'BHD Star The Garden', 'BHD Star Cầu Giấy'
+      'BHD Star Vincom Phạm Ngọc Thạch', 'BHD Star The Garden', 'BHD Star Cầu Giấy',
+      'BHD Star Vincom Đà Nẵng'
     ]},
     { brand: 'Cinestar', brandLabel: 'cinestar', cinemas: ['Cinestar Quốc Gia'] },
     { brand: 'Mega GS', brandLabel: 'mega', cinemas: ['Mega GS Cinemas Trung Hòa'] },
@@ -123,7 +124,7 @@ export default function MuaVePage() {
   const movieGroups = {};
   showtimes.forEach((st) => {
     if (!movieGroups[st.movieId]) {
-      movieGroups[st.movieId] = { title: st.movieTitle, genre: st.genre, duration: st.durationMinutes, rated: st.rated, showtimes: [] };
+      movieGroups[st.movieId] = { title: st.movieTitle, genre: st.genre, duration: st.durationMinutes, rated: st.rated, posterUrl: st.posterUrl, trailerUrl: st.trailerUrl, showtimes: [] };
     }
     movieGroups[st.movieId].showtimes.push(st);
   });
@@ -367,7 +368,7 @@ export default function MuaVePage() {
                                 <button key={st.id} onClick={() => navigate(`/booking/seats/${st.id}`)}
                                   className="px-4 py-2 rounded border border-gray-200 dark:border-gray-600 hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-700 transition-all text-sm font-medium text-gray-700 dark:text-gray-300">
                                   <div className="font-semibold">{formatTime(st.startTime)}</div>
-                                  {st.price && <div className="text-xs text-gray-400">{Math.round(st.price / 1000)}K</div>}
+                                  {st.basePrice && <div className="text-xs text-gray-400">{Math.round(st.basePrice / 1000)}K</div>}
                                 </button>
                               ))}
                             </div>

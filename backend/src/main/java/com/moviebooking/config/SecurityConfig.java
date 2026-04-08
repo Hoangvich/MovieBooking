@@ -48,6 +48,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/movies/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/cinemas/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/showtimes/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/image-proxy/**").permitAll()
                     // Swagger
                     .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
                     // Admin endpoints

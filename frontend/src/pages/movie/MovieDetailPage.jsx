@@ -1,11 +1,12 @@
-import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { HiClock, HiCalendar, HiPlay, HiXMark } from 'react-icons/hi2';
 import movieApi from '../../api/movieApi';
 import showtimeApi from '../../api/showtimeApi';
 import { DetailSkeleton } from '../../components/common/LoadingSkeleton';
 import { formatTime, formatShortDate } from '../../utils/formatters';
+import { getPosterUrl } from '../../utils/imageUtils';
 
 function generateDates(count = 7) {
   return Array.from({ length: count }, (_, i) => {
@@ -57,7 +58,7 @@ export default function MovieDetailPage() {
             {/* Poster */}
             <div className="w-40 sm:w-48 mx-auto sm:mx-0 flex-shrink-0">
               <img
-                src={movie.posterUrl || `https://placehold.co/300x450/1e293b/64748b?text=${encodeURIComponent(movie.title)}`}
+                src={getPosterUrl(movie.id, movie.title)}
                 alt={movie.title}
                 className="w-full rounded-xl shadow-2xl"
               />
@@ -121,25 +122,16 @@ export default function MovieDetailPage() {
 
       {/* Trailer Modal */}
       {showTrailer && movie.trailerUrl && (() => {
-        const match = movie.trailerUrl.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-        const videoId = match ? match[1] : null;
-        if (!videoId) return null;
+        const m = movie.trailerUrl.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+        const vid = m ? m[1] : null;
+        if (!vid) return null;
         return (
           <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-2 sm:p-4" onClick={() => setShowTrailer(false)}>
-            <button
-              onClick={() => setShowTrailer(false)}
-              className="absolute top-3 right-3 sm:top-5 sm:right-5 text-white/80 hover:text-white transition-colors z-10"
-            >
+            <button onClick={() => setShowTrailer(false)} className="absolute top-3 right-3 sm:top-5 sm:right-5 text-white/80 hover:text-white z-10">
               <HiXMark className="w-7 h-7 sm:w-8 sm:h-8" />
             </button>
             <div className="w-full max-w-4xl aspect-video" onClick={(e) => e.stopPropagation()}>
-              <iframe
-                className="w-full h-full rounded-lg sm:rounded-xl"
-                src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
-                title={`${movie.title} - Trailer`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+              <iframe className="w-full h-full rounded-lg sm:rounded-xl" src={`https://www.youtube.com/embed/${vid}?autoplay=1`} title="Trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
             </div>
           </div>
         );
@@ -198,7 +190,7 @@ export default function MovieDetailPage() {
                         className="px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-700 transition-all text-sm text-gray-800 dark:text-gray-200 font-semibold min-w-[72px] text-center"
                       >
                         <div>{formatTime(st.startTime)}</div>
-                        {st.price && <div className="text-xs font-normal text-gray-400">{Math.round(st.price / 1000)}K</div>}
+                        {st.basePrice && <div className="text-xs font-normal text-gray-400">{Math.round(st.basePrice / 1000)}K</div>}
                       </button>
                     ))}
                   </div>

@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import movieApi from '../../api/movieApi';
 import Modal from '../../components/common/Modal';
 import Loading from '../../components/common/Loading';
+import { getPosterUrl } from '../../utils/imageUtils';
 
 export default function AdminMovies() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -78,7 +79,7 @@ export default function AdminMovies() {
               <tr key={movie.id} className="hover:bg-dark-50 dark:hover:bg-dark-800/50">
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <img src={movie.posterUrl || `https://placehold.co/40x60/1e293b/64748b?text=${movie.title[0]}`}
+                    <img src={getPosterUrl(movie.id, movie.title)}
                       className="w-10 h-14 rounded object-cover" alt="" />
                     <div>
                       <p className="font-medium">{movie.title}</p>

@@ -5,6 +5,7 @@ import { HiChevronDown } from 'react-icons/hi2';
 import cinemaApi from '../api/cinemaApi';
 import showtimeApi from '../api/showtimeApi';
 import { formatTime } from '../utils/formatters';
+import { getPosterUrl } from '../utils/imageUtils';
 
 const REGIONS = [
   { name: 'Hà Nội', count: 25 },
@@ -26,20 +27,21 @@ const REGIONS = [
 const CINEMA_BRANDS = {
   'Hà Nội': [
     { brand: 'CGV', brandLabel: 'cgv', cinemas: [
-      'CGV Vincom Royal City', 'CGV Vincom Bà Triệu', 'CGV Aeon Mall Long Biên',
-      'CGV Aeon Mall Hà Đông', 'CGV Ocean Park', 'CGV Tràng Tiền Plaza',
-      'CGV Times City', 'CGV Hồ Gươm Plaza', 'CGV Vincom Metropolis'
+      'CGV Royal City', 'CGV Tràng Tiền Plaza', 'CGV Times City',
+      'CGV Hồ Gươm Plaza', 'CGV Vincom Metropolis', 'CGV Vincom Center',
+      'CGV Aeon Mall Tân Phú'
     ]},
     { brand: 'Lotte Cinema', brandLabel: 'lotte', cinemas: [
       'Lotte Cinema Landmark 72', 'Lotte Cinema Thăng Long', 'Lotte Cinema Long Biên',
-      'Lotte Cinema Ba Đình', 'Lotte Cinema Đống Đa'
+      'Lotte Cinema Ba Đình', 'Lotte Cinema Đống Đa', 'Lotte Cinema Landmark 81'
     ]},
     { brand: 'Beta Cineplex', brandLabel: 'beta', cinemas: [
       'Beta Cineplex Thanh Xuân', 'Beta Cineplex Giải Phóng', 'Beta Cineplex Mỹ Đình',
       'Beta Cineplex Đan Phượng', 'Beta Cineplex Xuân Thủy', 'Beta Cineplex Tây Sơn'
     ]},
     { brand: 'BHD Star', brandLabel: 'bhd', cinemas: [
-      'BHD Star Vincom Phạm Ngọc Thạch', 'BHD Star The Garden', 'BHD Star Cầu Giấy'
+      'BHD Star Vincom Phạm Ngọc Thạch', 'BHD Star The Garden', 'BHD Star Cầu Giấy',
+      'BHD Star Vincom Đà Nẵng'
     ]},
     { brand: 'Cinestar', brandLabel: 'cinestar', cinemas: ['Cinestar Quốc Gia'] },
     { brand: 'Mega GS', brandLabel: 'mega', cinemas: ['Mega GS Cinemas Trung Hòa'] },
@@ -87,7 +89,7 @@ function generateDates(count = 7) {
 
 function ShowtimeButton({ st, onClick }) {
   const isPast = false;
-  const isHighPrice = st.price > 100000;
+  const isHighPrice = st.basePrice > 100000;
   return (
     <button
       onClick={() => onClick(st.id)}
@@ -100,7 +102,7 @@ function ShowtimeButton({ st, onClick }) {
       disabled={isPast}
     >
       <div>{formatTime(st.startTime)}</div>
-      {st.price && <div className="text-xs font-normal text-gray-400">{Math.round(st.price / 1000)}K</div>}
+      {st.basePrice && <div className="text-xs font-normal text-gray-400">{Math.round(st.basePrice / 1000)}K</div>}
     </button>
   );
 }
@@ -286,10 +288,10 @@ export default function SchedulePage() {
                   Object.entries(movieGroups).map(([movieId, group]) => (
                     <div key={movieId} className="py-5 border-b border-gray-100 dark:border-gray-700 last:border-0">
                       <div className="flex gap-3 mb-3">
-                        {group.posterUrl && (
-                          <img src={group.posterUrl} alt={group.title}
-                            className="w-16 h-24 object-cover rounded-lg flex-shrink-0" />
-                        )}
+                        <img
+                          src={getPosterUrl(movieId, group.title)}
+                          alt={group.title}
+                          className="w-16 h-24 object-cover rounded-lg flex-shrink-0" />
                         <div className="flex-1 min-w-0">
                           <h4 className="font-semibold text-gray-900 dark:text-white text-base">{group.title}</h4>
                           <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
